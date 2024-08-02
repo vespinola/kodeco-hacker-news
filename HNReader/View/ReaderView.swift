@@ -41,6 +41,8 @@ struct ReaderView: View {
   @State var currentDate = Date()
   @EnvironmentObject var settings: Settings
 
+  @Environment(\.openURL) var openURL
+
   private let timer = Timer.publish(every: 10, on: .main, in: .common)
     .autoconnect()
 
@@ -49,9 +51,7 @@ struct ReaderView: View {
   }
 
   var body: some View {
-    let filter = "Showing all stories"
-
-    return NavigationView {
+    NavigationView {
       List {
         Section(header:
           getTextViewForFilters()
@@ -68,7 +68,9 @@ struct ReaderView: View {
               PostedBy(time: story.time, user: story.by, currentDate: self.currentDate)
 
               Button(story.url) {
-                print(story)
+                if let url = story.storyURL {
+                  openURL(url)
+                }
               }
               .font(.subheadline)
               .foregroundColor(

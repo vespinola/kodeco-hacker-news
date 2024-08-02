@@ -40,6 +40,12 @@ struct Story: Codable, Identifiable {
   let url: String
 }
 
+extension Story {
+  var storyURL: URL? {
+    .init(string: url)
+  }
+}
+
 extension Story: Comparable {
   static func < (lhs: Story, rhs: Story) -> Bool {
     return lhs.time > rhs.time
