@@ -54,7 +54,7 @@ struct API {
   /// API endpoints.
   enum EndPoint {
     static let baseURL = URL(string: "https://hacker-news.firebaseio.com/v0/")!
-    
+
     case stories
     case story(Int)
     

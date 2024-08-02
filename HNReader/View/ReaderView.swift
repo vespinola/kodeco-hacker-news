@@ -33,7 +33,7 @@
 import SwiftUI
 
 struct ReaderView: View {
-  var model: ReaderViewModel
+  @ObservedObject var model: ReaderViewModel
   @State var presentingSettingsSheet = false
 
   var currentDate = Date()
@@ -76,6 +76,13 @@ struct ReaderView: View {
         SettingsView()
       })
       // Display errors here
+      .alert(item: self.$model.error) { error in
+        Alert(
+          title: Text("Network error"),
+          message: Text(error.localizedDescription),
+          dismissButton: .cancel()
+        )
+      }
       .navigationBarTitle(Text("\(self.model.stories.count) Stories"))
       .navigationBarItems(trailing:
                             Button("Settings") {
