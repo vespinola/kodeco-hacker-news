@@ -31,12 +31,16 @@
 /// THE SOFTWARE.
 
 import SwiftUI
+import Combine
 
 struct ReaderView: View {
   @ObservedObject var model: ReaderViewModel
   @State var presentingSettingsSheet = false
 
-  var currentDate = Date()
+  @State var currentDate = Date()
+
+  private let timer = Timer.publish(every: 10, on: .main, in: .common)
+    .autoconnect()
 
   init(model: ReaderViewModel) {
     self.model = model
@@ -68,6 +72,9 @@ struct ReaderView: View {
             .padding()
           }
           // Add timer here
+          .onReceive(timer) {
+            self.currentDate = $0
+          }
         }.padding()
       }
       .listStyle(PlainListStyle())
