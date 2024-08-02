@@ -39,6 +39,7 @@ struct ReaderView: View {
   @Environment(\.colorScheme) var colorScheme: ColorScheme
 
   @State var currentDate = Date()
+  @EnvironmentObject var settings: Settings
 
   private let timer = Timer.publish(every: 10, on: .main, in: .common)
     .autoconnect()
@@ -52,7 +53,10 @@ struct ReaderView: View {
 
     return NavigationView {
       List {
-        Section(header: Text(filter).padding(.leading, -10)) {
+        Section(header:
+          getTextViewForFilters()
+            .padding(.leading, -10)
+        ) {
           ForEach(self.model.stories) { story in
             VStack(alignment: .leading, spacing: 10) {
               TimeBadge(time: story.time)
@@ -100,6 +104,15 @@ struct ReaderView: View {
         self.presentingSettingsSheet = true
       }
       )
+    }
+  }
+
+  @ViewBuilder
+  func getTextViewForFilters() -> some View {
+    if settings.keywords.isEmpty {
+      Text("Showing all stories")
+    } else {
+      Text("Filter: \(settings.joinedKeywords)")
     }
   }
 }

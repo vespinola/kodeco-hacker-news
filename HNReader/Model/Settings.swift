@@ -34,7 +34,21 @@ import Foundation
 import Combine
 
 final class Settings: ObservableObject {
-  init() { }
+  init() { 
+    let savedKeyboards: [FilterKeyword]? = try? JSONFile.loadValue(named: "keywords")
+    guard let savedKeyboards else { return }
+    keywords = savedKeyboards
+  }
   
-  @Published var keywords = [FilterKeyword]()
+  @Published var keywords = [FilterKeyword]() {
+    didSet {
+      try? JSONFile.save(value: keywords, named: "keywords")
+    }
+  }
+
+  var joinedKeywords: String {
+    keywords
+      .map { $0.value }
+      .joined(separator: ", ")
+  }
 }
