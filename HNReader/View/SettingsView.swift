@@ -46,14 +46,14 @@ fileprivate struct SettingsBarItems: View {
 
 /// A settings view showing a list of filter keywrods.
 struct SettingsView: View {
-  
+  @EnvironmentObject var settings: Settings
   @State var presentingAddKeywordSheet = false
   
   var body: some View {
     NavigationView {
       List {
         Section(header: Text("Filter keywords")) {
-          ForEach([FilterKeyword]()) { keyword in
+          ForEach(settings.keywords) { keyword in
             HStack(alignment: .top) {
               Image(systemName: "star")
                 .resizable()
@@ -65,11 +65,15 @@ struct SettingsView: View {
             }
           }
           // List editing actions
+          .onMove(perform: moveKeyword)
+          .onDelete(perform: deleteKeyword)
         }
       }
       .sheet(isPresented: $presentingAddKeywordSheet) {
         AddKeywordView(completed: { newKeyword in
-          
+          let new = FilterKeyword(value: newKeyword.lowercased())
+          self.settings.keywords.append(new)
+          self.presentingAddKeywordSheet = false
         })
         .frame(minHeight: 0, maxHeight: 400, alignment: .center)
       }
@@ -79,15 +83,18 @@ struct SettingsView: View {
   }
   
   private func addKeyword() {
-    
+    presentingAddKeywordSheet = true
   }
   
   private func moveKeyword(from source: IndexSet, to destination: Int) {
-    
+    guard let source = source.first, destination != settings.keywords.endIndex else { return }
+
+    settings.keywords
+      .swapAt(source, source > destination ? destination : destination - 1)
   }
   
   private func deleteKeyword(at index: IndexSet) {
-    
+    settings.keywords.remove(at: index.first!)
   }
 }
 
@@ -95,6 +102,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
   static var previews: some View {
     SettingsView()
+      .environmentObject(Settings())
   }
 }
 #endif

@@ -38,7 +38,7 @@ final class ReaderViewModel: ObservableObject {
   @Published private var allStories = [Story]()
   private var subscriptions = Set<AnyCancellable>()
 
-  var filter = [String]()
+  @Published var filter = [String]()
   
   var stories: [Story] {
     guard !filter.isEmpty else {
